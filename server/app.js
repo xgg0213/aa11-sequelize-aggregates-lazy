@@ -117,24 +117,38 @@ app.get('/toys/:toyId', async (req, res, next) => {
     STEP 4A: Find a toy with their associated cats
     */
     // Your code here 
+    const {toyId} = req.params;
+    const toy = await Toy.findByPk(toyId
+        , {
+        include: Cat
+    }
+    );
+
+    const cats = await toy.getCats();
 
     /* 
         STEP 4B: Find or calculate the total amount of cats that the toy is
         associated with.
     */
     // Your code here 
+    const catCount = cats.length;
 
     /*
         STEP 4C: Find or calculate the total amount of cats that have a color of
         "Orange" and that the toy is associated with.
     */
     // Your code here 
-
+    let orangeCatCount = 0;
+    
+    cats.forEach(cat => {
+        if (cat.color === 'Orange') orangeCatCount++
+    })
     /*
         STEP 4D: Find or calculate the percentage of cats that have a color of
         "Orange" and that the toy is associated with.
     */
     // Your code here 
+    const orangeCatPercentage = Math.round((orangeCatCount/catCount*100),0).toString().slice(0,2)+'%';
 
     /*
         STEP 4E: Return the toy, its associated cats, the count of
@@ -142,6 +156,14 @@ app.get('/toys/:toyId', async (req, res, next) => {
         the toy, and the percentage of orange cats that the toy is associated.
     */
     // Your code here 
+    return res.json({
+        
+        catCount,
+        orangeCatCount,
+        orangeCatPercentage,
+        ...toy.toJSON(),
+        
+    })
 });
 
 
